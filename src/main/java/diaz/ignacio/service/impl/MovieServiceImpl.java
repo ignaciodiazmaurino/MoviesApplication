@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import diaz.ignacio.model.Actor;
 import diaz.ignacio.model.Movie;
 import diaz.ignacio.service.MovieService;
+import exceptions.ActorAlreadyExistsEcception;
 import exceptions.ActorNotFoundException;
 import exceptions.MovieAlreadyExistsError;
 import exceptions.MovieNotFoundException;
@@ -41,10 +42,18 @@ public class MovieServiceImpl implements MovieService {
 		return movie;
 	}
 
-	public Movie addActor(Long movieId, Actor actor) throws MovieNotFoundException {
+	public Movie addActor(Movie movie, Actor actor) throws MovieNotFoundException, ActorAlreadyExistsEcception {
 
-		Movie movie = getMovieFromList(movieId);
-		movie.getCast().add(actor);
+		List<Actor> cast = movie.getCast();
+		final String name = actor.getName();
+		final String lastName = actor.getLastName();
+		Optional<Actor> actorOptional = cast.stream()
+				.filter(a -> a.getName().equals(name) && a.getLastName().equals(lastName))
+				.findFirst();
+		if (actorOptional.isPresent()) {
+			throw new ActorAlreadyExistsEcception();
+		}
+		cast.add(actor);
 		
 		return movie;
 
@@ -68,7 +77,7 @@ public class MovieServiceImpl implements MovieService {
 		return dataAccess.getMovies();
 	}
 
-	private Movie getMovieFromList(Long id) throws MovieNotFoundException {
+	public Movie getMovieFromList(Long id) throws MovieNotFoundException {
 		Optional<Movie> filteredMovie = dataAccess.getMovies().stream()
 				.filter(m -> id.longValue() == m.getId().longValue()).findFirst();
 

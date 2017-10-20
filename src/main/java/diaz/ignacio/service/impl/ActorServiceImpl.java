@@ -1,10 +1,12 @@
 package diaz.ignacio.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
 import diaz.ignacio.model.Actor;
 import diaz.ignacio.service.ActorService;
+import exceptions.ActorNotFoundException;
 import ignacio.diaz.dataAccess.impl.DataAccessImpl;
 
 public class ActorServiceImpl implements ActorService {
@@ -15,16 +17,32 @@ public class ActorServiceImpl implements ActorService {
 	private DataAccessImpl dataAccess = DataAccessImpl.getInstance();
 
 	@Override
-	public long createAnActor(String name, String lastName) {
+	public Actor createAnActor(Actor actor) {
 		
-		Actor actor = new Actor();
+		List<Actor> actors = dataAccess.getActors();
+		
+		Optional<Actor> optionalActor = actors.stream()
+				.filter(a -> a.getName().equals(actor.getName()) && a.getLastName().equals(actor.getLastName()))
+				.findAny();
+		if(optionalActor.isPresent()) {
+			return optionalActor.get();
+		}
+			
 		long id = COUNTER.incrementAndGet();
-		actor.setName(name);
-		actor.setLastName(lastName);
 		actor.setId(id);
 		actor.setLink(URL_BASE + "/" + id);
 		dataAccess.getActors().add(actor);
-		return id;
+		return actor;
+	}
+	
+	@Override
+	public Actor getActorFromList(Long id) throws ActorNotFoundException {
+		Optional<Actor> filteredActor = dataAccess.getActors().stream()
+				.filter(a -> id.longValue() == a.getId().longValue()).findFirst();
+
+		Actor actor = filteredActor.orElseThrow(() -> new ActorNotFoundException());
+
+		return actor;
 	}
 	
 	@Override

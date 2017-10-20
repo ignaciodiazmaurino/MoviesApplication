@@ -46,6 +46,7 @@ public final class DataAccessImpl {
 		
 		actor = new Actor();
 		id = 2;
+		actor.setId(id);
 		actor.setName("Mark");
 		actor.setLastName("Hamill");
 		actor.setLink(URL_BASE + id);
@@ -61,9 +62,11 @@ public final class DataAccessImpl {
 		movie.setCast(cast);
 		movie.setLink(URL_BASE + id);
 		
-		
+		movies.add(movie);
+
 		actor = new Actor();
 		id = 3;
+		actor.setId(id);
 		actor.setName("Marlon");
 		actor.setLastName("Brando");
 		actor.setLink(URL_BASE + id);
@@ -74,6 +77,7 @@ public final class DataAccessImpl {
 		
 		actor = new Actor();
 		id = 4;
+		actor.setId(id);
 		actor.setName("James");
 		actor.setLastName("Caan");
 		actor.setLink(URL_BASE + id);

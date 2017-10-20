@@ -4,6 +4,7 @@ import java.util.List;
 
 import diaz.ignacio.model.Actor;
 import diaz.ignacio.model.Movie;
+import exceptions.ActorAlreadyExistsEcception;
 import exceptions.ActorNotFoundException;
 import exceptions.MovieAlreadyExistsError;
 import exceptions.MovieNotFoundException;
@@ -24,12 +25,12 @@ public interface MovieService {
 	/**
 	 * Add an actor to the movie
 	 * 
-	 * @param movieId	The Id of the movie
+	 * @param movieId	The movie
 	 * @param actor		Actor to be added
 	 * @throws 			{@link MovieNotFoundException}
 	 * @throws 			{@link ActorNotFoundException}
 	 */
-	Movie addActor(Long movieId, Actor actor) throws MovieNotFoundException, ActorNotFoundException;
+	Movie addActor(Movie movie, Actor actor) throws MovieNotFoundException, ActorAlreadyExistsEcception;
 	
 	/**
 	 * Delete an actor from a movie
@@ -47,4 +48,12 @@ public interface MovieService {
 	 * @return	A list of movies 
 	 */
 	List <Movie> getMovies();
+
+	/**
+	 * 
+	 * @param id	The id of the movie
+	 * @return		A movie that has the id
+	 * @throws 		{@link MovieNotFoundException}
+	 */
+	Movie getMovieFromList(Long id) throws MovieNotFoundException;
 }
